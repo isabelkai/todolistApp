@@ -1,12 +1,21 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard } from 'react-native';
 import Task from './components/Task';
 
 export default function App() {
   const [task, setTask] = useState();
+  const [taskItems, setTaskItems] = useState([]);
 
   const handleAddTask = () => {
-    console.log(task);
+    Keyboard.dismiss();
+    setTaskItems([...taskItems, task]);
+    setTask(null);
+  }
+
+  const completeTask = (index) => {
+    let itemsCopy = [...taskItems];
+    itemsCopy.splice(index, 1);
+    setTaskItems(itemsCopy);
   }
 
   return (
@@ -18,8 +27,17 @@ export default function App() {
 
         <View style={styles.items}>
           {/* This is where the tasks will go */}
-          <Task text={'Task 1'}/>
-          <Task text={'Task 2'}/>
+          {
+            taskItems.map((item, index) => {
+              return (
+                <TouchableOpacity key={index} onPress={() => completeTask(index)} >
+                  <Task text={item} />
+                </TouchableOpacity>
+              )
+            })
+          }
+          {/*<Task text={'Task 1'}/>
+          <Task text={'Task 2'}/>*/}
         </View>
 
       </View>
